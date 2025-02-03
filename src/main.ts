@@ -1,10 +1,9 @@
 import {initiateModel, detectObjects} from "./modelConfig"
 
-const statusText = document.createElement("p")
-statusText.textContent = "Waiting For Device Camera..."
-
 const resultCont = document.getElementById("result-container") as HTMLDivElement
 const video = document.getElementById("video-element") as HTMLVideoElement
+const canvasEl = document.getElementById("canva-overlay") as HTMLCanvasElement
+
 let currentStream: MediaStream | null = null
 
 const startCamera = async () => {
@@ -16,7 +15,11 @@ const startCamera = async () => {
     currentStream = userVideo
     
     return new Promise((resolve) => {
-      video.onloadedmetadata = () => resolve(null)
+      video.onloadedmetadata = () => {
+        canvasEl.width = video.videoWidth
+        canvasEl.height = video.videoHeight
+        resolve(null)
+      }
     })
     
   }catch(error){
@@ -24,10 +27,11 @@ const startCamera = async () => {
   }
 }
 
-resultCont.appendChild(statusText);
-
+const statusText = document.createElement("p")
+statusText.textContent = "Waiting For Device Camera..."
+resultCont.appendChild(statusText)
 
 Promise.all([startCamera(), initiateModel()]).then(([_, model]) => {
   resultCont.innerHTML = ""
-  detectObjects(model, video, resultCont, currentStream)
+  detectObjects(model, video, resultCont, currentStream, canvasEl)
 })
