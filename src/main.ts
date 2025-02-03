@@ -1,7 +1,7 @@
 import {initiateModel, detectObjects} from "./modelConfig"
 
 const statusText = document.createElement("p")
-statusText.textContent = "Loading Model..."
+statusText.textContent = "Waiting For Device Camera..."
 
 const resultCont = document.getElementById("result-container") as HTMLDivElement
 const video = document.getElementById("video-element") as HTMLVideoElement
