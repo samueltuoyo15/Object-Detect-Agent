@@ -18,12 +18,12 @@ Real-time object detection web app using **TensorFlow.js** and the **COCO-SSD mo
 
 ```
 /project-root
-│── /dist              # Compiled TypeScript files
-│── /app
-│   ├── app.ts         # Entry point, initializes video & model
+│── /dist              # Compiled TypeScript files and html file 
+│── /src
+│   ├── main.ts      # Entry point, initializes video & model
 │   ├── modelConfig.ts # Loads COCO-SSD & handles detection
-│── /css
-│   ├── style.css      # Styling for the app
+│── /public 
+│   ├──               # public directory 
 │── index.html         # Main HTML file
 │── tsconfig.json      # TypeScript configuration
 │── package.json       # Dependencies (if using npm)
@@ -56,8 +56,8 @@ Real-time object detection web app using **TensorFlow.js** and the **COCO-SSD mo
 ### 1️⃣ Clone the Repository
 
 ```sh
-git clone https://github.com/samueltuoyo15/Ai-Object-Detection.git
-cd object-detection
+git clone https://github.com/samueltuoyo15/Ai-Object-Detector.git
+cd Ai-Object-Detector
 ```
 
 ### 2️⃣ Install Dependencies
@@ -68,10 +68,10 @@ npm install
 
 ### 3️⃣ Run the Project
 
-compile and run code:
+run code:
 
 ```sh
-npm start
+npm run dev
 ```
 
 Then open `index.html` in your browser.
