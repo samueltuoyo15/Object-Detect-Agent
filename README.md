@@ -1,117 +1,113 @@
-# 📌 Object Detection with COCO-SSD and TensorFlow.js
+# **Real-time Object Detection Agent 📸**
 
-Real-time object detection web app using **TensorFlow.js** and the **COCO-SSD model**, supporting live video input from a user's device.
-
----
-
-## 🚀 Features
-
-✔️ Real-time object detection in video streams  
-✔️ Uses **COCO-SSD**, a lightweight and fast pre-trained model  
-✔️ Automatically stops detection when the tab is inactive  
-✔️ Stops the camera when the user leaves the page  
-✔️ Displays detection results dynamically  
+Dive into the world of AI with this powerful, browser-based object detection application. Utilizing cutting-edge machine learning capabilities, this project transforms your webcam feed into a dynamic visual scanner, identifying objects in real-time. It's a practical demonstration of integrating advanced AI models directly into a responsive web environment.
 
 ---
 
-## 📂 Project Structure
+## 🚀 Installation
 
-```
-/project-root
-│── /dist              # Compiled TypeScript files and html file 
-│── /src
-│   ├── main.ts      # Entry point, initializes video & model
-│   ├── modelConfig.ts # Loads COCO-SSD & handles detection
-│── /public 
-│   ├──               # public directory 
-│── index.html         # Main HTML file
-│── tsconfig.json      # TypeScript configuration
-│── package.json       # Dependencies (if using npm)
-│── README.md          # Project documentation
-```
+Getting this project up and running on your local machine is straightforward. Follow these steps to set up your development environment:
 
----
+*   **Clone the Repository:**
+    Start by cloning the project to your local machine using Git:
 
-## 📜 How It Works
+    ```bash
+    git clone https://github.com/samueltuoyo15/Object-Detect-Agent.git
+    cd Object-Detect-Agent
+    ```
 
-1. **Initialize the Camera**  
-   - Requests permission to access the user's camera  
-   - Starts a video stream on the page  
+*   **Install Dependencies:**
+    Navigate into the project directory and install all necessary packages using npm:
 
-2. **Load the COCO-SSD Model**  
-   - Uses TensorFlow.js to load the pre-trained COCO-SSD model  
+    ```bash
+    npm install
+    ```
 
-3. **Detect Objects in Real Time**  
-   - Continuously analyzes video frames and logs detected objects  
-   - Displays detected objects with **name** and **confidence score**  
+*   **Run Development Server:**
+    Once dependencies are installed, you can launch the development server to view the application in your browser. This command will typically open the app at `http://localhost:5173/` (or a similar port).
 
-4. **Optimize Performance**  
-   - Stops detection when the tab is inactive  
-   - Automatically turns off the camera when the user leaves  
+    ```bash
+    npm run dev
+    ```
+
+*   **Build for Production:**
+    To create an optimized production build of the application, run the following command. The compiled files will be located in the `dist` directory.
+
+    ```bash
+    npm run build
+    ```
 
 ---
 
-## 📦 Installation & Setup
+## 💡 Usage
 
-### 1️⃣ Clone the Repository
+Once the application is running, it will automatically attempt to access your device's camera.
 
-```sh
-git clone https://github.com/samueltuoyo15/Ai-Object-Detector.git
-cd Ai-Object-Detector
-```
-
-### 2️⃣ Install Dependencies
-
-```sh
-npm install
-```
-
-### 3️⃣ Run the Project
-
-run code:
-
-```sh
-npm run dev
-```
-
-Then open `index.html` in your browser.
+1.  **Grant Camera Permission:** Upon loading, your browser will prompt you to grant camera access. Please allow this for the application to function correctly.
+2.  **Live Detection:** The application will display your live camera feed. In real-time, it will draw bounding boxes around detected objects and label them with their predicted class and confidence score.
+3.  **Result Display:** A panel next to the video feed will list all currently detected objects, along with their confidence percentages, providing a clear overview of what the model is identifying.
+4.  **Visibility Management:** The application intelligently pauses object detection and camera stream when the browser tab is not active, conserving resources. Detection automatically resumes when the tab is brought back into focus.
 
 ---
 
----
+## ✨ Features
 
-## 🎯 Key Technologies Used
-
-| Tech               | Description                                      |
-|--------------------|--------------------------------------------------|
-| **TypeScript**     | Ensures type safety & better maintainability    |
-| **TensorFlow.js**  | Runs machine learning models directly in the browser |
-| **COCO-SSD**      | Lightweight object detection model optimized for real-time use |
-| **HTML5 & CSS3**   | Simple, responsive UI                           |
-| **MediaDevices API** | Accesses the user’s camera                    |
+*   **Real-time Object Detection:** Leverages the COCO-SSD model via TensorFlow.js to perform live object detection directly in the browser.
+*   **Webcam Integration:** Seamlessly integrates with your device's webcam to capture live video streams for analysis.
+*   **Dynamic Bounding Boxes:** Draws precise bounding boxes and labels around detected objects on a canvas overlay for clear visual feedback.
+*   **Confidence Scoring:** Displays the confidence percentage for each detected object, providing insight into the model's certainty.
+*   **Resource Management:** Automatically pauses the camera stream and detection process when the tab is hidden, optimizing performance and battery life.
+*   **Type-Safe Development:** Built with TypeScript for enhanced code quality, maintainability, and early error detection.
 
 ---
 
-## 🛠 Possible Improvements
+## 🛠️ Technologies Used
 
-🔹 Add a UI overlay to highlight detected objects on video  
-🔹 Support image uploads for static object detection  
-🔹 Implement a **recording feature** to save detection results  
-
----
-
-## 👨‍💻 Author
-
-| Name          | Contact                                      |
-|--------------|----------------------------------------------|
-| **Your Name** | 📧 samueltuoyo9082@gmail.com |
-| GitHub       | 🐙 [GitHub](https://github.com/samueluoyo15) |
-| LinkedIn     | 🔗 [LinkedIn](https://www.linkedin.com/in/samuel-tuoyo-%F0%9F%93%A2-8568b62b6) |
+| Technology         | Description                                                          | Link                                              |
+| :----------------- | :------------------------------------------------------------------- | :------------------------------------------------ |
+| **TypeScript**     | A superset of JavaScript that adds static types to the language.     | [Official Website](https://www.typescriptlang.org/) |
+| **Vite**           | A fast build tool and development server for modern web projects.    | [Official Website](https://vitejs.dev/)           |
+| **TensorFlow.js**  | An open-source machine learning library for JavaScript.              | [Official Website](https://www.tensorflow.org/js) |
+| **COCO-SSD Model** | A pre-trained object detection model trained on the COCO dataset.    | [GitHub Repo](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd) |
 
 ---
 
-### 📢 Like this project? Give it a ⭐ on GitHub!
+## 🤝 Contributing
 
-```md
-⭐ Star the repo to support development!
-```
+Contributions are always welcome! If you have suggestions for improvements, new features, or bug fixes, please feel free to contribute to this project.
+
+*   **Fork the repository.**
+*   **Create a new branch** for your feature or bug fix: `git checkout -b feature/your-feature-name`.
+*   **Make your changes** and commit them with clear, concise messages.
+*   **Push your branch** to your forked repository.
+*   **Open a pull request** describing your changes in detail.
+
+---
+
+## 📄 License
+
+This project is open-source.
+
+---
+
+## ✍️ Author
+
+This project was developed by:
+
+**Samuel Tuoyo**
+*   **GitHub**: [https://github.com/samueltuoyo15](https://github.com/samueltuoyo15/Ai-Object-Detector)
+*   **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/your-profile)
+*   **Portfolio**: [Your Portfolio Website](https://your-portfolio.com)
+
+---
+
+## 🏆 Badges
+
+[![Built with Vite](https://img.shields.io/badge/Built%20with-Vite-blueviolet?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/Language-TypeScript-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TensorFlow.js](https://img.shields.io/badge/Powered%20by-TensorFlow.js-orange?style=flat&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/js)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/samueltuoyo15/Ai-Object-Detector?color=lightgreen)](https://github.com/samueltuoyo15/Ai-Object-Detector)
+
+---
+
+[![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
