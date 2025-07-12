@@ -1,6 +1,7 @@
 import * as tf from "@tensorflow/tfjs"
 import * as cocoSsd from "@tensorflow-models/coco-ssd"
 let detectionInterval: number | null = null
+let hasReloaded = false
 
 export const initiateModel = async (): Promise<cocoSsd.ObjectDetection> => {
   await tf.ready()
@@ -56,13 +57,17 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
     }
   }
   
-  document.addEventListener("visibilitychange", () => {
-    if(document.hidden){
-     stopDetection()
-     stopVideoStream()
-     }else{
-       window.location.reload()
-      }
-    })
-   return stopDetection
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopDetection()
+    stopVideoStream()
+    hasReloaded = false
+  } else {
+    if (!hasReloaded) {
+      hasReloaded = true
+      window.location.reload()
+    }
+  }
+})
+
 }
