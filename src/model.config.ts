@@ -43,6 +43,12 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
   await detect()
   detectionInterval = setInterval(detect, 200) as unknown as number
   
+  const startDetection = () => {
+    if(!detectionInterval){
+      detectionInterval = setInterval(detect, 200) as unknown as number
+    }
+  }
+  
   const stopDetection = () => {
     if(detectionInterval){
       clearInterval(detectionInterval)
@@ -57,17 +63,18 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
     }
   }
   
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    stopDetection()
-    stopVideoStream()
-    hasReloaded = false
-  } else {
-    if (!hasReloaded) {
-      hasReloaded = true
-      window.location.reload()
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden){
+      stopDetection()
+      stopVideoStream()
+      hasReloaded = false
+    }else{
+      if(!hasReloaded){
+        hasReloaded = true
+        window.location.reload()
+      }
     }
-  }
-})
+  })
 
+  return stopDetection
 }
