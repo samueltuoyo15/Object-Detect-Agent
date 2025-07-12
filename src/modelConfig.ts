@@ -1,6 +1,9 @@
+import * as tf from "@tensorflow/tfjs"
+import * as cocoSsd from "@tensorflow-models/coco-ssd"
 let detectionInterval: number | null = null
 
 export const initiateModel = async (): Promise<cocoSsd.ObjectDetection> => {
+  await tf.ready()
   const model = await cocoSsd.load()
   return model 
 }
@@ -37,11 +40,11 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
   }
   
   await detect()
-  detectionInterval = setInterval(detect, 200)
+  detectionInterval = setInterval(detect, 200) as unknown as number
   
   const startDetection = () => {
     if(!detectionInterval){
-      detectionInterval = setInterval(detect, 200)
+      detectionInterval = setInterval(detect, 200) as unknown as number
     }
   }
   
@@ -64,7 +67,7 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
      stopDetection()
      stopVideoStream()
      }else{
-       setTimeout(startDetection, 200)
+       window.location.reload()
       }
     })
    return stopDetection
