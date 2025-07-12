@@ -84,8 +84,8 @@ This project is currently under development, and the license information will be
 
 Developed with ❤️ by OritseWeyinmi Samuel Tuoyo.
 
-*   **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/samuel-tuoyo-8568b62b6)
-*   **X**: [@YourTwitterHandle](https://x.com/TuoyoS26091)
+*   **LinkedIn**: [samuel_tuoyo](https://www.linkedin.com/in/samuel-tuoyo-8568b62b6)
+*   **X**: [@TuoyoS26091](https://x.com/TuoyoS26091)
 
 ---
 
