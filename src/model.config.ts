@@ -42,12 +42,6 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
   await detect()
   detectionInterval = setInterval(detect, 200) as unknown as number
   
-  const startDetection = () => {
-    if(!detectionInterval){
-      detectionInterval = setInterval(detect, 200) as unknown as number
-    }
-  }
-  
   const stopDetection = () => {
     if(detectionInterval){
       clearInterval(detectionInterval)

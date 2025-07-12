@@ -1,4 +1,4 @@
-import { initiateModel, detectObjects } from "./modelConfig"
+import { initiateModel, detectObjects } from "./model.config"
 
 const resultCont = document.getElementById("result-container") as HTMLDivElement
 const video = document.getElementById("video-element") as HTMLVideoElement
