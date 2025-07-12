@@ -8,26 +8,20 @@ let currentStream: MediaStream | null = null
 
 const startCamera = async () => {
   return new Promise(async (resolve, reject) => {
-    const timeout = setTimeout(() => {
-      window.location.reload()
-    }, 10000)
-
     try {
       const userVideo = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
+        video: { facingMode: "environment" }
       })
       video.srcObject = userVideo
       currentStream = userVideo
 
       video.onloadedmetadata = () => {
-        clearTimeout(timeout)
         canvasEl.width = video.videoWidth
         canvasEl.height = video.videoHeight
         resolve(null)
       }
     } catch (error) {
-      clearTimeout(timeout)
-      window.location.reload()
+      resultCont.innerHTML = "Camera access failed. Please allow permission."
       reject(error)
     }
   })
@@ -38,7 +32,7 @@ statusText.textContent = "Initializing camera..."
 resultCont.appendChild(statusText)
 
 setTimeout(() => {
-  statusText.textContent = "Camera failed. Reloading..."
+  statusText.textContent = "Still waiting for camera..."
 }, 3000)
 
 Promise.all([startCamera(), initiateModel()]).then(([_, model]) => {

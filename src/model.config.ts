@@ -65,7 +65,7 @@ export const detectObjects = async (model: cocoSsd.ObjectDetection, video: HTMLV
     }else{
       if(!hasReloaded){
         hasReloaded = true
-        window.location.reload()
+       window.location.reload()
       }
     }
   })
