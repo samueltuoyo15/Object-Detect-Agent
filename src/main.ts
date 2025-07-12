@@ -10,7 +10,7 @@ const startCamera = async () => {
   return new Promise(async (resolve, reject) => {
     const timeout = setTimeout(() => {
       window.location.reload()
-    }, 4000)
+    }, 10000)
 
     try {
       const userVideo = await navigator.mediaDevices.getUserMedia({
