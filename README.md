@@ -1,6 +1,6 @@
 # Real-time Object Detection Agent 📸
 
-Dive into the world of AI with the **Object Detection Agent**, a minimalist yet powerful web application designed to identify objects in real-time using your device's camera. Built with TypeScript and leveraging the robust capabilities of TensorFlow.js and the COCO-SSD model, this project offers a dynamic and interactive experience for recognizing common objects right in your browser.
+Dive into the world of AI with the **Object Detection Agent**, a minimalist yet powerful web application designed to identify objects in real-time using your device's camera. Built with TypeScript + Vite and powered by **YOLOv8 (ONNX Runtime Web)** for noticeably better accuracy than COCO-SSD.
 
 ## 🚀 Getting Started
 
@@ -10,7 +10,7 @@ Ready to see AI in action? Follow these steps to get the Object Detection Agent 
 
 Before you begin, make sure you have Node.js and npm (Node Package Manager) installed.
 
-### Installation
+### Installation (pnpm)
 
 Clone the repository and install the necessary dependencies:
 
@@ -22,7 +22,7 @@ cd Object-Detect-Agent
 Once inside the project directory, install the dependencies:
 
 ```bash
-npm install
+npx -y pnpm@9 install
 ```
 
 ### Running the Application
@@ -30,7 +30,7 @@ npm install
 To start the development server and launch the application:
 
 ```bash
-npm run dev
+npx -y pnpm@9 run dev
 ```
 
 Your browser should automatically open the application, usually at `http://localhost:5173/`. If it doesn't, navigate there manually.
@@ -40,17 +40,17 @@ Your browser should automatically open the application, usually at `http://local
 Upon launching the application, you'll be prompted to grant camera access. Allow access to begin real-time object detection.
 
 *   **Camera Feed**: You'll see a live video feed from your camera.
-*   **Object Detection**: The AI model continuously analyzes the video stream for recognizable objects.
+*   **Object Detection**: YOLOv8 continuously analyzes the video stream for recognizable objects.
 *   **Bounding Boxes**: Detected objects will be highlighted with green bounding boxes drawn directly on the video feed.
 *   **Results Display**: A list of detected objects, along with their confidence scores (e.g., "person - 98.50%"), will be displayed next to the video.
 *   **No Detection Message**: If no recognizable objects are found, a "No Recognizable Object Detected" message will appear.
-*   **Background Handling**: The application intelligently pauses detection and the camera stream when the browser tab is not active, reloading upon focus to ensure optimal performance and resource management.
+*   **Background Handling**: The app keeps the pipeline alive when you switch tabs. Note that browsers still throttle background tabs, so FPS may drop until you return.
 
 ## ✨ Features
 
 *   **Real-time Object Detection**: Instantly identifies objects from your live camera feed.
 *   **Browser-based Interface**: Runs entirely in the browser, requiring no complex server-side setup.
-*   **AI-Powered**: Utilizes the pre-trained COCO-SSD model via TensorFlow.js for accurate object recognition.
+*   **AI-Powered**: Utilizes **YOLOv8** via **ONNX Runtime Web** for improved object recognition.
 *   **Visual Feedback**: Draws bounding boxes around detected objects for clear visualization.
 *   **Confidence Scores**: Displays the probability of detection for each identified object.
 *   **Responsive Camera Management**: Automatically handles camera stream and detection based on tab visibility, optimizing performance.
@@ -62,8 +62,8 @@ Upon launching the application, you'll be prompted to grant camera access. Allow
 | :----------------- | :------------------------------------------------------------------------------------------------------ |
 | **TypeScript**     | A strongly typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality.      |
 | **Vite**           | A next-generation frontend tooling that provides an extremely fast development experience.               |
-| **TensorFlow.js**  | An open-source machine learning library for JavaScript, enabling on-device ML in the browser.           |
-| **COCO-SSD Model** | A pre-trained object detection model (part of TensorFlow.js) capable of detecting 90 common objects. |
+| **ONNX Runtime Web** | Runs ONNX models (like YOLO) directly in the browser (WASM/WebGPU). |
+| **YOLOv8 (ONNX)**     | Real-time object detector (COCO 80 classes). |
 
 ## 🤝 Contributing
 
