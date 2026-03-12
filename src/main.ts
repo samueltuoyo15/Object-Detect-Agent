@@ -1,6 +1,5 @@
 import { createLetterboxCanvas, loadYolo, postprocessYolov8, preprocessToTensor, type YoloDetection, type YoloModelId, type YoloSession } from "./yolo"
 
-const resultCont = document.getElementById("result-container") as HTMLElement
 const video = document.getElementById("video-element") as HTMLVideoElement
 const canvasEl = document.getElementById("canva-overlay") as HTMLCanvasElement
 
@@ -57,17 +56,14 @@ const startCamera = async (deviceId?: string) => {
     video.srcObject = stream
     await video.play()
 
-  
     await new Promise<void>((resolve) => {
       if (video.readyState >= 2 && video.videoWidth > 0) return resolve()
       video.onloadedmetadata = () => resolve()
     })
     fitCanvasToVideo()
   } catch (error) {
-    resultCont.innerHTML = ""
-    const p = document.createElement("p")
-    p.textContent = "Camera access failed. Please allow permission and refresh."
-    resultCont.appendChild(p)
+    console.error("Camera access failed", error);
+    hudStatus.textContent = "Camera Error"
     throw error
   }
 }
@@ -96,16 +92,31 @@ const listCameras = async () => {
 const stopAll = () => {
   running = false
   stopCamera()
-  btnStart.disabled = false
-  btnStop.disabled = true
+  
+  if (btnStart) {
+    btnStart.classList.remove("active-scan")
+    btnStart.disabled = false
+  }
+  if (btnStop) {
+    btnStop.disabled = true
+    btnStop.classList.remove("active-scan")
+  }
+
   hudStatus.textContent = "Stopped"
+  hudStatus.classList.remove("active")
   hudFps.textContent = "-- fps"
 }
 
 const startAll = async () => {
   stopAll()
-  btnStart.disabled = true
-  btnStop.disabled = false
+  
+  if (btnStart) {
+    btnStart.classList.add("active-scan")
+    btnStart.disabled = true
+  }
+  if (btnStop) {
+    btnStop.disabled = false
+  }
 
   currentBase = baseSelect.value as YoloModelId
   currentMinScore = Number(minScoreRange.value)
@@ -114,54 +125,33 @@ const startAll = async () => {
   await listCameras()
 
   hudStatus.textContent = "Loading YOLO…"
+  hudStatus.classList.add("active")
   yolo = await loadYolo(currentBase, { size: 640 })
   hudStatus.textContent = "Running…"
-  resultCont.innerHTML = ""
   running = true
   lastLoopTs = performance.now()
   fpsSmoothed = 0
   void loop()
 }
 
-btnStart.addEventListener("click", () => void startAll())
-btnStop.addEventListener("click", () => stopAll())
+btnStart?.addEventListener("click", () => void startAll())
+btnStop?.addEventListener("click", () => stopAll())
 
-minScoreRange.addEventListener("input", () => {
+minScoreRange?.addEventListener("input", () => {
   currentMinScore = Number(minScoreRange.value)
 })
 
-baseSelect.addEventListener("change", () => {
-  if (!btnStop.disabled) void startAll()
+baseSelect?.addEventListener("change", () => {
+  if (btnStop && !btnStop.disabled) void startAll()
 })
 
-cameraSelect.addEventListener("change", () => {
-  if (!btnStop.disabled) void startAll()
+cameraSelect?.addEventListener("change", () => {
+  if (btnStop && !btnStop.disabled) void startAll()
 })
 
 window.addEventListener("resize", () => {
   if (currentStream) fitCanvasToVideo()
 })
-
-document.addEventListener("visibilitychange", () => {
-  // Keep running when tab is hidden. Browsers will throttle timers, but we don't tear down the stream/model.
-})
-
-const renderResults = (dets: YoloDetection[]) => {
-  resultCont.innerHTML = ""
-  if (dets.length === 0) {
-    const p = document.createElement("p")
-    p.className = "muted"
-    p.textContent = "No objects (lower confidence / improve lighting)"
-    resultCont.appendChild(p)
-    return
-  }
-
-  for (const d of dets) {
-    const p = document.createElement("p")
-    p.textContent = `${d.label} • ${(d.score * 100).toFixed(1)}%`
-    resultCont.appendChild(p)
-  }
-}
 
 const drawBoxes = (dets: YoloDetection[]) => {
   const ctx = canvasEl.getContext("2d")
@@ -169,27 +159,82 @@ const drawBoxes = (dets: YoloDetection[]) => {
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height)
 
   const dpr = window.devicePixelRatio || 1
-  const displayW = canvasEl.width / dpr
-  ctx.lineWidth = Math.max(2, Math.round(displayW / 320))
-  ctx.strokeStyle = "rgba(240, 201, 161, 0.95)"
-  ctx.fillStyle = "rgba(16, 10, 6, 0.55)"
-  ctx.font = `${Math.max(12, Math.round(displayW / 48))}px Inter, Arial, sans-serif`
+  
+  const primaryNavy = "#222831"
+  const bgWhite = "#FFFFFF"
+  const accentOrange = "#EDA97A"
 
   for (const d of dets) {
-    ctx.beginPath()
-    ctx.rect(d.x, d.y, d.w, d.h)
-    ctx.stroke()
+    const bracketLen = 20 * dpr;
+    const bracketThickness = 3 * dpr;
+    
+    ctx.strokeStyle = bgWhite;
+    ctx.lineWidth = bracketThickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y + bracketLen);
+    ctx.lineTo(d.x, d.y);
+    ctx.lineTo(d.x + bracketLen, d.y);
+    ctx.stroke();
 
-    const label = `${d.label} ${(d.score * 100).toFixed(0)}%`
-    const pad = 6
-    const textW = ctx.measureText(label).width
-    const boxH = Math.max(18, Math.round(displayW / 42))
-    const bx = Math.max(0, d.x)
-    const by = Math.max(0, d.y - boxH)
-    ctx.fillRect(bx, by, textW + pad * 2, boxH)
-    ctx.fillStyle = "rgba(255, 244, 235, 0.95)"
-    ctx.fillText(label, bx + pad, by + boxH - pad)
-    ctx.fillStyle = "rgba(16, 10, 6, 0.55)"
+    ctx.beginPath();
+    ctx.moveTo(d.x + d.w - bracketLen, d.y);
+    ctx.lineTo(d.x + d.w, d.y);
+    ctx.lineTo(d.x + d.w, d.y + bracketLen);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(d.x + d.w, d.y + d.h - bracketLen);
+    ctx.lineTo(d.x + d.w, d.y + d.h);
+    ctx.lineTo(d.x + d.w - bracketLen, d.y + d.h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(d.x + bracketLen, d.y + d.h);
+    ctx.lineTo(d.x, d.y + d.h);
+    ctx.lineTo(d.x, d.y + d.h - bracketLen);
+    ctx.stroke();
+
+    const labelText = d.label;
+    const subText = `${(d.score * 100).toFixed(0)}% Match`;
+    
+    ctx.font = `600 ${14 * dpr}px Outfit, sans-serif`;
+    const labelW = ctx.measureText(labelText).width;
+    
+    ctx.font = `500 ${10 * dpr}px Outfit, sans-serif`;
+    const subW = ctx.measureText(subText).width;
+    
+    const cardW = Math.max(labelW, subW) + (40 * dpr);
+    const cardH = 46 * dpr;
+    
+    const cx = d.x + (d.w / 2) - (cardW / 2);
+    const cy = d.y - cardH - (10 * dpr);
+
+    ctx.shadowColor = "rgba(45, 49, 66, 0.15)";
+    ctx.shadowBlur = 12 * dpr;
+    ctx.shadowOffsetY = 4 * dpr;
+    
+    ctx.fillStyle = bgWhite;
+    ctx.beginPath();
+    ctx.roundRect(cx, cy, cardW, cardH, 12 * dpr);
+    ctx.fill();
+    
+    ctx.shadowColor = "transparent";
+    
+    ctx.fillStyle = accentOrange;
+    ctx.beginPath();
+    ctx.arc(cx + (14 * dpr), cy + (cardH / 2), 4 * dpr, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = primaryNavy;
+    ctx.font = `700 ${13 * dpr}px Outfit, sans-serif`;
+    ctx.fillText(labelText, cx + (26 * dpr), cy + (20 * dpr));
+
+    ctx.fillStyle = "#8E919D";
+    ctx.font = `500 ${10 * dpr}px Outfit, sans-serif`;
+    ctx.fillText(subText, cx + (26 * dpr), cy + (36 * dpr));
   }
 }
 
@@ -200,7 +245,7 @@ const loop = async () => {
   if (!running) return
   const session = yolo
   if (!session || video.readyState < 2) {
-    hudStatus.textContent = "Waiting for video…"
+    if (hudStatus) hudStatus.textContent = "Waiting for video…"
     setTimeout(() => void loop(), 200)
     return
   }
@@ -216,7 +261,7 @@ const loop = async () => {
     lastLoopTs = now
     const fpsNow = dt > 0 ? 1000 / dt : 0
     fpsSmoothed = fpsSmoothed === 0 ? fpsNow : fpsSmoothed * 0.9 + fpsNow * 0.1
-    hudFps.textContent = `${fpsSmoothed.toFixed(0)} fps`
+    if (hudFps) hudFps.textContent = `${fpsSmoothed.toFixed(0)} fps`
 
     const size = session.size
     const meta = preprocessToTensor(video, letterboxCanvas, size)
@@ -226,10 +271,13 @@ const loop = async () => {
     const tensor = out[outputName]
     const dets = postprocessYolov8(tensor, { ...meta, size }, currentMinScore)
     drawBoxes(dets)
-    renderResults(dets)
-    hudStatus.textContent = dets.length ? `Detected ${dets.length}` : "No objects"
-  } catch {
-    hudStatus.textContent = "Detection error"
+    
+    if (hudStatus) {
+      hudStatus.textContent = dets.length ? `Found ${dets.length} items` : "Scanning..."
+    }
+  } catch (err) {
+    console.error(err)
+    if (hudStatus) hudStatus.textContent = "Detection error"
   } finally {
     busy = false
     const delay = document.hidden ? 250 : 0
@@ -238,15 +286,14 @@ const loop = async () => {
 }
 
 const boot = async () => {
-  hudStatus.textContent = "Initializing…"
+  if (hudStatus) hudStatus.textContent = "Initializing…"
   try {
     await startCamera()
     await listCameras()
   } catch {
-    // If permission is denied, keep UI usable; user can retry via Start.
   } finally {
     stopCamera()
-    hudStatus.textContent = "Ready. Click Start."
+    if (hudStatus) hudStatus.textContent = "Ready"
   }
 }
 

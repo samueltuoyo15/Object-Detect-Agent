@@ -7,7 +7,6 @@ export type YoloDetection = {
   classId: number
   label: string
   score: number
-  // pixel coords in video space
   x: number
   y: number
   w: number
@@ -21,7 +20,6 @@ export type YoloSession = {
 }
 
 const DEFAULT_MODEL_URLS: Record<YoloModelId, string> = {
-  // HuggingFace "resolve" URLs generally allow CORS in browsers.
   yolov8n: "https://huggingface.co/cabelo/yolov8/resolve/main/yolov8n.onnx",
   yolov8s: "https://huggingface.co/cabelo/yolov8/resolve/main/yolov8s.onnx"
 }
@@ -30,7 +28,6 @@ export async function loadYolo(model: YoloModelId, opts?: { modelUrl?: string; s
   const size = opts?.size ?? 640
   const modelUrl = opts?.modelUrl ?? DEFAULT_MODEL_URLS[model]
 
-  // Best-effort: use WebGPU if available; fall back automatically.
   const session = await ort.InferenceSession.create(modelUrl, {
     executionProviders: ["webgpu", "wasm"],
     graphOptimizationLevel: "all"
@@ -170,13 +167,11 @@ export function postprocessYolov8(
     }
     if (bestScore < confThresh || bestClass < 0 || bestClass >= COCO80_CLASSES.length) continue
 
-    // boxes are in letterboxed input space (size x size) as center-x/y width/height
     const x1 = cx - w / 2
     const y1 = cy - h / 2
     const x2 = cx + w / 2
     const y2 = cy + h / 2
 
-    // undo letterbox
     const vx1 = (x1 - padX) / scale
     const vy1 = (y1 - padY) / scale
     const vx2 = (x2 - padX) / scale

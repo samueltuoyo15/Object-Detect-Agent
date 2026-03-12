@@ -1,97 +1,110 @@
-# Real-time Object Detection Agent 📸
+# AR Object Scanner 👁️‍🗨️
 
-Dive into the world of AI with the **Object Detection Agent**, a minimalist yet powerful web application designed to identify objects in real-time using your device's camera. Built with TypeScript + Vite and powered by **YOLOv8 (ONNX Runtime Web)** for noticeably better accuracy than COCO-SSD.
+## Overview
+The AR Object Scanner is an innovative augmented reality application that leverages real-time computer vision to identify and display detected objects directly within your camera feed. Built with TypeScript, Vite, and powered by ONNX Runtime Web, this project brings state-of-the-art YOLOv8 object detection capabilities to the browser, offering a seamless and interactive user experience.
 
-## 🚀 Getting Started
+## Features
+-   **Real-time Object Detection**: Instantly identifies and categorizes objects within the live camera stream.
+-   **Augmented Reality (AR) Overlays**: Displays detection bounding boxes with elegant corner brackets and floating labels, providing an immersive AR experience.
+-   **YOLOv8 Model Integration**: Utilizes performant YOLOv8 `nano` and `small` ONNX models for accurate and efficient client-side inference.
+-   **Client-side Inference**: Executes machine learning models directly in the browser using ONNX Runtime Web, ensuring privacy and low latency without server interaction.
+-   **Camera Stream Management**: Effortlessly starts, stops, and switches between available camera devices.
+-   **Configurable Confidence Threshold**: Users can adjust the minimum confidence score to fine-tune detection sensitivity.
+-   **Dynamic Performance HUD**: Real-time display of detection status and Frames Per Second (FPS).
+-   **Responsive UI**: A clean, mobile-first design built with modern CSS for a consistent experience across devices.
 
-Ready to see AI in action? Follow these steps to get the Object Detection Agent running locally on your machine.
+## Getting Started
 
-### Prerequisites
+Follow these instructions to set up and run the AR Object Scanner on your local machine.
 
-Before you begin, make sure you have Node.js and npm (Node Package Manager) installed.
+### Installation
 
-### Installation (pnpm)
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/samueltuoyo15/Object-Detect-Agent.git
+    cd Object-Detect-Agent
+    ```
 
-Clone the repository and install the necessary dependencies:
+2.  **Install Dependencies**:
+    This project uses `pnpm` as its package manager. Ensure you have `pnpm` installed.
+    ```bash
+    pnpm install
+    ```
 
-```bash
-git clone https://github.com/samueltuoyo15/Object-Detect-Agent.git
-cd Object-Detect-Agent
-```
+### Running the Project
 
-Once inside the project directory, install the dependencies:
+1.  **Start Development Server**:
+    To run the application in development mode with hot-reloading:
+    ```bash
+    pnpm dev
+    ```
+    The application will typically be available at `http://localhost:5173`.
 
-```bash
-npx -y pnpm@9 install
-```
+2.  **Build for Production**:
+    To create a production-ready build of the application:
+    ```bash
+    pnpm build
+    ```
+    The compiled assets will be located in the `dist/` directory.
 
-### Running the Application
+3.  **Preview Production Build**:
+    To locally preview the production build:
+    ```bash
+    pnpm preview
+    ```
 
-To start the development server and launch the application:
+## Usage
 
-```bash
-npx -y pnpm@9 run dev
-```
+Once the application is running, you can interact with it as follows:
 
-Your browser should automatically open the application, usually at `http://localhost:5173/`. If it doesn't, navigate there manually.
+1.  **Start Scanning**: Click the central "Scan" button (🔍 icon) in the bottom navigation to activate your camera and begin real-time object detection. The HUD will show "Requesting camera..." then "Loading YOLO..." and finally "Running...".
 
-## 💡 Usage
+2.  **Stop Scanning**: Click the "Stop" button (⏹️ icon) in the bottom navigation to halt the camera stream and object detection.
 
-Upon launching the application, you'll be prompted to grant camera access. Allow access to begin real-time object detection.
+3.  **Model Selection**: In the "Settings" panel, use the "Model" dropdown to switch between `YOLOv8n (Fast)` and `YOLOv8s (Better)` models. The application will automatically reload the chosen model.
 
-*   **Camera Feed**: You'll see a live video feed from your camera.
-*   **Object Detection**: YOLOv8 continuously analyzes the video stream for recognizable objects.
-*   **Bounding Boxes**: Detected objects will be highlighted with green bounding boxes drawn directly on the video feed.
-*   **Results Display**: A list of detected objects, along with their confidence scores (e.g., "person - 98.50%"), will be displayed next to the video.
-*   **No Detection Message**: If no recognizable objects are found, a "No Recognizable Object Detected" message will appear.
-*   **Background Handling**: The app keeps the pipeline alive when you switch tabs. Note that browsers still throttle background tabs, so FPS may drop until you return.
+4.  **Confidence Threshold**: Adjust the "Min confidence" slider in the "Settings" panel to set the minimum score an object detection must have to be displayed. Lowering this value may show more detections but also increase false positives.
 
-## ✨ Features
+5.  **Camera Selection**: If you have multiple cameras connected, use the "Camera" dropdown to select which camera feed to use for detection.
 
-*   **Real-time Object Detection**: Instantly identifies objects from your live camera feed.
-*   **Browser-based Interface**: Runs entirely in the browser, requiring no complex server-side setup.
-*   **AI-Powered**: Utilizes **YOLOv8** via **ONNX Runtime Web** for improved object recognition.
-*   **Visual Feedback**: Draws bounding boxes around detected objects for clear visualization.
-*   **Confidence Scores**: Displays the probability of detection for each identified object.
-*   **Responsive Camera Management**: Automatically handles camera stream and detection based on tab visibility, optimizing performance.
-*   **Modern Web Stack**: Built with TypeScript and Vite for a robust and efficient development experience.
+As objects are detected, they will be highlighted with stylish AR overlays on the video feed, showing corner brackets, the object's label, and a confidence percentage.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
-| Technology         | Description                                                                                             |
-| :----------------- | :------------------------------------------------------------------------------------------------------ |
-| **TypeScript**     | A strongly typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality.      |
-| **Vite**           | A next-generation frontend tooling that provides an extremely fast development experience.               |
-| **ONNX Runtime Web** | Runs ONNX models (like YOLO) directly in the browser (WASM/WebGPU). |
-| **YOLOv8 (ONNX)**     | Real-time object detector (COCO 80 classes). |
+| Technology         | Description                                                          |
+| :----------------- | :------------------------------------------------------------------- |
+| **TypeScript**     | Strongly typed JavaScript for enhanced code quality and developer experience. |
+| **Vite**           | Fast and modern build tool for front-end development.                |
+| **Node.js**        | JavaScript runtime environment (used for build tools and development). |
+| **ONNX Runtime Web** | High-performance inference engine for running ONNX models in the browser. |
+| **YOLOv8**         | State-of-the-art, real-time object detection models.                |
+| **HTML5**          | Standard markup language for structuring web content.                |
+| **CSS3**           | Styling language for visually appealing and responsive interfaces.   |
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are always welcome! If you have ideas for improvements or new features, feel free to contribute.
+We welcome contributions to the AR Object Scanner project! If you're looking to help, please consider the following:
 
-1.  **Fork** the repository.
-2.  **Create a new branch** for your feature or bug fix: `git checkout -b feature/your-feature-name`.
-3.  **Make your changes** and ensure the code adheres to the project's style.
-4.  **Commit your changes**: `git commit -m 'feat: Add new awesome feature'`.
-5.  **Push** to your branch: `git push origin feature/your-feature-name`.
-6.  **Open a Pull Request** to the `main` branch of this repository.
+*   ✨ **Feature Ideas**: Propose new functionalities or improvements to existing ones.
+*   🐛 **Bug Reports**: Identify and report any issues you encounter.
+*   🛠️ **Code Contributions**: Submit pull requests for bug fixes, new features, or code improvements.
+*   📝 **Documentation**: Help improve and expand our project documentation.
 
-## 📄 License
+To get started, please fork the repository and create a new branch for your changes. We appreciate your efforts!
 
-This project is currently under development, and the license information will be provided shortly.
+## Author Info
 
-## 👤 Author
+Developed by **Samuel Tuoyo**
 
-Developed with ❤️ by OritseWeyinmi Samuel Tuoyo.
-
-*   **LinkedIn**: [samuel_tuoyo](https://www.linkedin.com/in/samuel-tuoyo-8568b62b6)
-*   **X**: [@TuoyoS26091](https://x.com/TuoyoS26091)
+- *   **LinkedIn**: [samuel_tuoyo](https://www.linkedin.com/in/samuel-tuoyo-8568b62b6)
+- *   **X**: [@TuoyoS26091](https://x.com/TuoyoS26091)
 
 ---
-
+### Badges
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/js)
-[![License: MIT (Pending)](https://img.shields.io/badge/License-MIT%20(Pending)-yellow.svg)](https://opensource.org/licenses/MIT)
+[![ONNX Runtime Web](https://img.shields.io/badge/ONNX_Runtime_Web-A1D6E2?style=for-the-badge&logo=onnx&logoColor=white)](https://onnxruntime.ai/docs/tutorials/web/index.html)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-FF0000?style=for-the-badge&logo=yolo&logoColor=white)](https://ultralytics.com/yolov8)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
 [![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
