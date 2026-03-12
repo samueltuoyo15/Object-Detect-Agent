@@ -1,6 +1,8 @@
 import * as ort from "onnxruntime-web"
 import { COCO80_CLASSES } from "./yolo.labels"
 
+ort.env.wasm.wasmPaths = "https://cdnjs.cloudflare.com/ajax/libs/onnxruntime-web/1.22.0/";
+
 export type YoloModelId = "yolov8n" | "yolov8s"
 
 export type YoloDetection = {
@@ -24,11 +26,32 @@ const DEFAULT_MODEL_URLS: Record<YoloModelId, string> = {
   yolov8s: "https://huggingface.co/cabelo/yolov8/resolve/main/yolov8s.onnx"
 }
 
-export async function loadYolo(model: YoloModelId, opts?: { modelUrl?: string; size?: number }) {
+export async function loadYolo(model: YoloModelId, onProgress?: (msg: string) => void, opts?: { modelUrl?: string; size?: number }) {
   const size = opts?.size ?? 640
   const modelUrl = opts?.modelUrl ?? DEFAULT_MODEL_URLS[model]
 
-  const session = await ort.InferenceSession.create(modelUrl, {
+  if (onProgress) onProgress("Checking cache…")
+  let buffer: ArrayBuffer;
+  try {
+    const cache = await caches.open("yolo-model-cache");
+    const cachedResponse = await cache.match(modelUrl);
+    if (cachedResponse) {
+      if (onProgress) onProgress("Loading from cache…")
+      buffer = await cachedResponse.arrayBuffer();
+    } else {
+      if (onProgress) onProgress("Downloading AI model…")
+      const res = await fetch(modelUrl);
+      if (!res.ok) throw new Error("Failed to download model");
+      await cache.put(modelUrl, res.clone());
+      buffer = await res.arrayBuffer();
+    }
+  } catch (e) {
+    console.warn("Cache API failed, falling back to network url", e);
+    buffer = await (await fetch(modelUrl)).arrayBuffer();
+  }
+
+  if (onProgress) onProgress("Initializing Engine…")
+  const session = await ort.InferenceSession.create(buffer, {
     executionProviders: ["webgpu", "wasm"],
     graphOptimizationLevel: "all"
   })
@@ -85,7 +108,7 @@ export function preprocessToTensor(
 ): { tensor: ort.Tensor; scale: number; padX: number; padY: number; srcW: number; srcH: number } {
   const srcW = video.videoWidth
   const srcH = video.videoHeight
-  const ctx = canvas.getContext("2d")
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })
   if (!ctx) throw new Error("No 2D context")
 
   ctx.clearRect(0, 0, size, size)

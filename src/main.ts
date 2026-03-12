@@ -1,4 +1,5 @@
 import { createLetterboxCanvas, loadYolo, postprocessYolov8, preprocessToTensor, type YoloDetection, type YoloModelId, type YoloSession } from "./yolo"
+import { COCO80_CLASSES } from "./yolo.labels"
 
 const video = document.getElementById("video-element") as HTMLVideoElement
 const canvasEl = document.getElementById("canva-overlay") as HTMLCanvasElement
@@ -18,6 +19,19 @@ let yolo: YoloSession | null = null
 let currentBase: YoloModelId = "yolov8s"
 let currentMinScore = Number(minScoreRange.value)
 const letterboxCanvas = createLetterboxCanvas(640)
+
+const vocabList = document.getElementById("vocab-list")
+if (vocabList) {
+  vocabList.innerHTML = COCO80_CLASSES.map(cls => `<li>${cls}</li>`).join("")
+}
+
+const vocabPanel = document.getElementById("vocab-panel")
+document.getElementById("btn-vocab-mobile")?.addEventListener("click", () => {
+  vocabPanel?.classList.add("modal-open")
+})
+document.getElementById("btn-close-vocab")?.addEventListener("click", () => {
+  vocabPanel?.classList.remove("modal-open")
+})
 
 const stopCamera = () => {
   if (currentStream) {
@@ -124,9 +138,9 @@ const startAll = async () => {
   await startCamera(cameraSelect.value || undefined)
   await listCameras()
 
-  hudStatus.textContent = "Loading YOLO…"
-  hudStatus.classList.add("active")
-  yolo = await loadYolo(currentBase, { size: 640 })
+  yolo = await loadYolo(currentBase, (msg) => {
+    if (hudStatus) hudStatus.textContent = msg;
+  }, { size: 640 })
   hudStatus.textContent = "Running…"
   running = true
   lastLoopTs = performance.now()
@@ -200,20 +214,20 @@ const drawBoxes = (dets: YoloDetection[]) => {
     const labelText = d.label;
     const subText = `${(d.score * 100).toFixed(0)}% Match`;
     
-    ctx.font = `600 ${14 * dpr}px Outfit, sans-serif`;
+    ctx.font = `600 ${22 * dpr}px Outfit, sans-serif`;
     const labelW = ctx.measureText(labelText).width;
     
-    ctx.font = `500 ${10 * dpr}px Outfit, sans-serif`;
+    ctx.font = `500 ${14 * dpr}px Outfit, sans-serif`;
     const subW = ctx.measureText(subText).width;
     
-    const cardW = Math.max(labelW, subW) + (40 * dpr);
-    const cardH = 46 * dpr;
+    const cardW = Math.max(labelW, subW) + (48 * dpr);
+    const cardH = 64 * dpr;
     
     const cx = d.x + (d.w / 2) - (cardW / 2);
-    const cy = d.y - cardH - (10 * dpr);
+    const cy = d.y - cardH - (16 * dpr);
 
-    ctx.shadowColor = "rgba(45, 49, 66, 0.15)";
-    ctx.shadowBlur = 12 * dpr;
+    ctx.shadowColor = "rgba(45, 49, 66, 0.25)";
+    ctx.shadowBlur = 18 * dpr;
     ctx.shadowOffsetY = 4 * dpr;
     
     ctx.fillStyle = bgWhite;
@@ -225,16 +239,16 @@ const drawBoxes = (dets: YoloDetection[]) => {
     
     ctx.fillStyle = accentOrange;
     ctx.beginPath();
-    ctx.arc(cx + (14 * dpr), cy + (cardH / 2), 4 * dpr, 0, Math.PI * 2);
+    ctx.arc(cx + (18 * dpr), cy + (cardH / 2), 6 * dpr, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = primaryNavy;
-    ctx.font = `700 ${13 * dpr}px Outfit, sans-serif`;
-    ctx.fillText(labelText, cx + (26 * dpr), cy + (20 * dpr));
+    ctx.font = `700 ${18 * dpr}px Outfit, sans-serif`;
+    ctx.fillText(labelText, cx + (32 * dpr), cy + (28 * dpr));
 
     ctx.fillStyle = "#8E919D";
-    ctx.font = `500 ${10 * dpr}px Outfit, sans-serif`;
-    ctx.fillText(subText, cx + (26 * dpr), cy + (36 * dpr));
+    ctx.font = `500 ${13 * dpr}px Outfit, sans-serif`;
+    ctx.fillText(subText, cx + (32 * dpr), cy + (48 * dpr));
   }
 }
 
@@ -288,12 +302,10 @@ const loop = async () => {
 const boot = async () => {
   if (hudStatus) hudStatus.textContent = "Initializing…"
   try {
-    await startCamera()
-    await listCameras()
+    await startAll()
   } catch {
   } finally {
-    stopCamera()
-    if (hudStatus) hudStatus.textContent = "Ready"
+    if (hudStatus && running) hudStatus.textContent = "Scanning..."
   }
 }
 

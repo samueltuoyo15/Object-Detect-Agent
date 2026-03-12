@@ -3,11 +3,14 @@
 ## Overview
 The AR Object Scanner is an innovative augmented reality application that leverages real-time computer vision to identify and display detected objects directly within your camera feed. Built with TypeScript, Vite, and powered by ONNX Runtime Web, this project brings state-of-the-art YOLOv8 object detection capabilities to the browser, offering a seamless and interactive user experience.
 
+<img src="./public/demo.png">
+
 ## Features
 -   **Real-time Object Detection**: Instantly identifies and categorizes objects within the live camera stream.
 -   **Augmented Reality (AR) Overlays**: Displays detection bounding boxes with elegant corner brackets and floating labels, providing an immersive AR experience.
 -   **YOLOv8 Model Integration**: Utilizes performant YOLOv8 `nano` and `small` ONNX models for accurate and efficient client-side inference.
 -   **Client-side Inference**: Executes machine learning models directly in the browser using ONNX Runtime Web, ensuring privacy and low latency without server interaction.
+-   **80-Class Vocabulary**: Reliably detects common objects across 80 distinct COCO categories (e.g. `person`, `cell phone`, `laptop`, `scissors`, `cup`). *(Note: AI detection is limited to these specific training categories).*
 -   **Camera Stream Management**: Effortlessly starts, stops, and switches between available camera devices.
 -   **Configurable Confidence Threshold**: Users can adjust the minimum confidence score to fine-tune detection sensitivity.
 -   **Dynamic Performance HUD**: Real-time display of detection status and Frames Per Second (FPS).
@@ -68,6 +71,18 @@ Once the application is running, you can interact with it as follows:
 5.  **Camera Selection**: If you have multiple cameras connected, use the "Camera" dropdown to select which camera feed to use for detection.
 
 As objects are detected, they will be highlighted with stylish AR overlays on the video feed, showing corner brackets, the object's label, and a confidence percentage.
+
+### Supported Object Classes
+The application utilizes models trained on the **COCO80** dataset. It can only detect objects within these 80 specific categories. 
+
+Common supported objects include:
+- **People**: Person
+- **Vehicles**: Bicycle, Car, Motorcycle, Airplane, Bus, Train, Truck, Boat
+- **Animals**: Bird, Cat, Dog, Horse, Sheep, Cow, Elephant, Bear, Zebra, Giraffe
+- **Electronics**: TV, Laptop, Mouse, Remote, Keyboard, Cell Phone, Microwave, Oven, Refrigerator
+- **Everyday Items**: Backpack, Umbrella, Handbag, Tie, Suitcase, Bottle, Wine Glass, Cup, Fork, Knife, Spoon, Bowl, Book, Clock, Vase, Scissors, Teddy Bear, Hair Drier, Toothbrush
+
+*(Note: Items functionally similar but not explicitly in this list, such as a "phone cord" or "USB cable," may be incorrectly classified as visually similar shapes like "scissors" due to the constraints of the lightweight browser model).*
 
 ## Technologies Used
 
