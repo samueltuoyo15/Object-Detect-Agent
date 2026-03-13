@@ -52,34 +52,71 @@ const fitCanvasToVideo = () => {
 }
 
 const startCamera = async (deviceId?: string) => {
-  try {
-    hudStatus.textContent = "Requesting camera…"
+  hudStatus.textContent = "Requesting camera…"
+
+  const primaryAttempt = async () => {
     const constraints: MediaStreamConstraints = {
       video: {
         deviceId: deviceId ? { exact: deviceId } : undefined,
         facingMode: deviceId ? undefined : "environment",
         width: { ideal: 1280 },
-        height: { ideal: 720 },
-        frameRate: { ideal: 30, max: 60 }
+        height: { ideal: 720 }
       },
       audio: false
     }
-
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
     currentStream = stream
     video.srcObject = stream
     await video.play()
-
-    await new Promise<void>((resolve) => {
-      if (video.readyState >= 2 && video.videoWidth > 0) return resolve()
-      video.onloadedmetadata = () => resolve()
-    })
-    fitCanvasToVideo()
-  } catch (error) {
-    console.error("Camera access failed", error);
-    hudStatus.textContent = "Camera Error"
-    throw error
   }
+
+  const fallbackAttempt = async () => {
+    const constraints: MediaStreamConstraints = { video: true, audio: false }
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    currentStream = stream
+    video.srcObject = stream
+    await video.play()
+  }
+
+  try {
+    await primaryAttempt()
+  } catch (err: unknown) {
+    const e = err as DOMException
+    if (e && (e.name === "NotReadableError" || e.name === "OverconstrainedError")) {
+      try {
+        await fallbackAttempt()
+      } catch (err2: unknown) {
+        const ee = err2 as DOMException
+        if (ee && ee.name === "NotAllowedError") {
+          hudStatus.textContent = "Camera blocked in browser"
+        } else if (ee && ee.name === "NotFoundError") {
+          hudStatus.textContent = "No camera found"
+        } else {
+          hudStatus.textContent = "Camera Error"
+        }
+        console.error("Camera access failed (fallback)", err2)
+        throw err2
+      }
+    } else if (e && e.name === "NotAllowedError") {
+      hudStatus.textContent = "Camera blocked in browser"
+      console.error("Camera access denied", err)
+      throw err
+    } else if (e && e.name === "NotFoundError") {
+      hudStatus.textContent = "No camera found"
+      console.error("No camera found", err)
+      throw err
+    } else {
+      hudStatus.textContent = "Camera Error"
+      console.error("Camera access failed", err)
+      throw err
+    }
+  }
+
+  await new Promise<void>((resolve) => {
+    if (video.readyState >= 2 && video.videoWidth > 0) return resolve()
+    video.onloadedmetadata = () => resolve()
+  })
+  fitCanvasToVideo()
 }
 
 const listCameras = async () => {
