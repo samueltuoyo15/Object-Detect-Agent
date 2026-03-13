@@ -3,7 +3,7 @@
 ## Overview
 The AR Object Scanner is an innovative augmented reality application that leverages real-time computer vision to identify and display detected objects directly within your camera feed. Built with TypeScript, Vite, and powered by ONNX Runtime Web, this project brings state-of-the-art YOLOv8 object detection capabilities to the browser, offering a seamless and interactive user experience.
 
-<img src="./public/demo.png">
+<img src="./public/demo.jpg">
 
 ## Features
 -   **Real-time Object Detection**: Instantly identifies and categorizes objects within the live camera stream.
